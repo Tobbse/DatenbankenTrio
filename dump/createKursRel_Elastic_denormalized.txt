@@ -16,8 +16,7 @@ PUT /
     },
     "mappings" : {
         "angebot" : {
-            "_doc" : {
-                "dynamic": "strict",
+            "dynamic": "strict",
                 "properties" : {
                     "AngNr" : { "type" : "keyword" },
                     "KursNr" : { "type" : "keyword" },
@@ -27,61 +26,62 @@ PUT /
                     },
                     "Ort" : { "type" : "text" }
                 }
-            }
+
         },
         "fuehrt_durch": {
-            "_doc" : {
-                "dynamic": "strict",
+            "dynamic": "strict",
                 "properties" : {
                     "Pers" : {}
-                }
-            },
-            "_parent": { "type" : "angebot" }
+                    "my_join_field": {
+                        "type": "join",
+                        "relations": {
+                            "angebot": "fuehrt_durch"
+                        }
+                    }
+
+            }
         },
         "nimmt_teil" : {
-            "_doc" : {
-                "dynamic": "strict",
+            dynamic": "strict",
                 "properties" : {
                     "Tn" : {},
                     "Gebuehr" : {
                         "type" : "double",
                         "null_value": "0"//"NULL"?
                     }
-                }
+
             },
             "_parent": { "type" : "angebot" }
         },
         "teilnehmer" : {
-            "_doc" : {
-                "dynamic": "strict",
+            "dynamic": "strict",
                 "properties" : {
                     "TnNr" : { "type" : "keyword" },
                     "Name" : { "type" : "text" },
                     "Ort" : { "type" : "text" }
                 }
-            }
+
         },
         "kursleiter" : {
-            "_doc" : {
-                "dynamic": "strict",
+            "dynamic": "strict",
                 "properties" : {
                     "PersNr" : { "type" : "keyword" },
                     "Name" : { "type" : "text" },
                     "Gehalt" : { "type" : "double" }
                 }
-            }
+
         },
         "kurs" : {
-            "_doc" : {
-                "dynamic": "strict",
+            "dynamic": "strict",
                 "properties" : {
                     "Kurs" : {}
-                }
+
             },
             "_parent" : { "type" : "angebot" }
         },
         "kursDaten" : {
-             "type" : "nested",
+        "dynamic": "strict",
+
              "properties" : {
                  "KursNr" : { "type" : "text" },
                  "Titel" : { "type" : "text" },
