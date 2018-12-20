@@ -1,0 +1,74 @@
+a. alle Orte, an denen Kurse durchgeführt werden.
+
+GET /angebot/_search?filter_path=aggregations.Orte.buckets.key
+    {
+      "aggs" : {
+        "Orte" : {
+          "terms" : {
+            "field" : "Ort"
+          }
+        }
+      }
+    }
+
+
+b. die Teilnehmer aus Stuttgart.
+
+GET /teilnehmer/_search
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match":
+          {
+            "Ort": "Stuttgart"
+          }
+
+      }
+    }
+  }
+}
+
+
+c. die Kursleiter mit einem Gehalt zwischen 3000 € und 4000 €, sortiert nach Namen.
+
+GET /kursleiter/_search
+{
+  "query": {
+    "range": {
+      "Gehalt": {
+        "gte": 3000,
+        "lte": 4000
+      }
+    }
+  }
+}
+
+d. die Kurstitel mit Datum und Ort, an dem sie stattfinden.
+
+
+
+
+e. Anfrage d) mit zusätzlicher Ausgabe der Kursleiter.
+
+
+
+f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten
+
+g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
+
+h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teilnehmer gibt.
+
+i. alle Kurse (egal welches Angebot) mit mindestens 5 Teilnehmern.
+
+j. alle Meier, sowohl Teilnehmer wie auch Kursleiter.
+
+k. die Kurstitel mit der jeweiligen Anzahl der Angebote.
+
+l. die Kurstitel mit der Anzahl der Voraussetzungen, die mindestens 2 Voraussetzungen haben. Die Ausgabe soll so erfolgen, dass die Kurse mit den meisten Voraussetzungen zuerst kommen.
+
+m. für alle Kurse (Titel ausgeben) das durchschnittliche Gehalt der  Kursleiter, die ein Angebot dieses Kurses durchführen (nach diesem Durchschnitt aufsteigend sortiert).
+
+n. alle Paare von Kursleitern, die denselben Kurs halten, und den entsprechenden Kurstitel. Geben Sie jedes Paar nur einmal aus.
+
+

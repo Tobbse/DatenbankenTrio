@@ -1,4 +1,3 @@
-// --------------------------------------------------------------------
 PUT angebot
 {
   "settings": {
@@ -18,63 +17,28 @@ PUT angebot
           "format" : "dd.MM.yyyy"
         },
         "Ort": {
-          "type": "text"
+          "type": "text",
+          "fielddata"
         }
-      }
-    }
-  }
-}
-
-
-PUT fuehrt_durch
-{
-  "settings": {
-    "number_of_shards": 1
-  },
-  "mappings": {
-    "_doc" : {
-      "properties": {
-        "Pers": {
-          "type" : "keyword"
-        },
-        "my_join_field": {
-          "type": "join",
-          "relations": {
-            "angebot": "fuehrt_durch"
-          }
-        }
-      }
-    }
-  }
-}
-
-
-PUT nimmt_teil
-{
-  "settings": {
-    "number_of_shards": 1
-  },
-  "mappings": {
-    "_doc": {
-      "properties": {
-        "Tn": {
+        ,
+        "Kursleiter": {
           "type": "keyword"
-        },
-        "Gebuehr": {
-          "type": "double",
-          "null_value": "0"
-        },
-        "my_join_field": {
-          "type": "join",
-          "relations": {
-            "angebot": "nimmt_teil"
-          }
         }
-      }
-    }
-  }
+        ,
+        "Teilnehmer": {
+          "type": "nested",
+          "properties": {
+            "TnNr": {
+              "type": "keyword"
+            },
+            "Gebuehr": {
+              "type": "double",
+              "null_value": 0.0
+            }
+          }
+       }
+  }}}
 }
-
 
 PUT teilnehmer
 {
@@ -164,118 +128,70 @@ PUT kurs
 
 // ------------------------------------------------------------------------------------------------------------
 
-
-
-// ANGEBOTE
 POST _bulk
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "G08-1"}}
-    {"AngNr" : "1", "KursNr": "G08", "Datum" : "13.10.2018", "Ort" : "Wedel"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "G08-2"}}
-    {"AngNr" : "2", "KursNr" : "G08", "Datum" : "24.11.2018", "Ort" : "Ulm"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "G10-1"}}
-    {"AngNr" : "1", "KursNr" : "G10", "Datum" : "01.12.2018", "Ort" : "Kiel"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "G10-2"}}
-    {"AngNr" : "2", "KursNr" : "G10", "Datum" : "15.02.2018", "Ort" : "Hamburg"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "P13-1"}}
-    {"AngNr" : "1", "KursNr" : "P13", "Datum" : "28.05.2018", "Ort" : "Berlin"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "P13-2"}}
-    {"AngNr" : "2", "KursNr" : "P13", "Datum" : "01.07.2018", "Ort" : "Wedel"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "I09-1"}}
-    {"AngNr" : "1", "KursNr" : "I09", "Datum" : "27.03.2018", "Ort" : "Kiel"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "I09-2"}}
-    {"AngNr" : "2", "KursNr" : "I09", "Datum" : "23.04.2018", "Ort" : "Hamburg"}
-    {"index" : { "_index" : "angebot", "_type" : "_doc", "_id" : "I09-3"}}
-    {"AngNr" : "3", "KursNr" : "I09", "Datum" : "29.05.2018", "Ort" : "Muenchen"}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "1", "KursNr": "G08", "Datum" : "13.10.2018", "Ort" : "Wedel", "Kursleiter" : "38197", "Teilnehmer" : [{"TnNr" : "145", "Gebuehr" : null}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "2", "KursNr" : "G08", "Datum" : "24.11.2018", "Ort" : "Ulm", "Kursleiter" : "38197", "Teilnehmer" : [{"TnNr" : "143", "Gebuehr" : 500}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "1", "KursNr" : "G10", "Datum" : "01.12.2018", "Ort" : "Kiel", "Kursleiter" : "43325", "Teilnehmer" : []}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "2", "KursNr" : "G10", "Datum" : "15.02.2018", "Ort" : "Hamburg", "Kursleiter" : "29594", "Teilnehmer" : []}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "1", "KursNr" : "P13", "Datum" : "28.05.2018", "Ort" : "Berlin", "Kursleiter" : "27183", "Teilnehmer" : [{"TnNr" : "194", "Gebuehr" : null},{"TnNr" : "146", "Gebuehr" : 300}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "2", "KursNr" : "P13", "Datum" : "01.07.2018", "Ort" : "Wedel", "Kursleiter" : "27183", "Teilnehmer" : [{"TnNr" : "143", "Gebuehr" : 400}, {"TnNr" : "149", "Gebuehr" : 350}, {"TnNr" : "177", "Gebuehr" : null}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "1", "KursNr" : "I09", "Datum" : "27.03.2018", "Ort" : "Kiel", "Kursleiter" : "29594", "Teilnehmer" : [{"TnNr" : "146", "Gebuehr" : null},{"TnNr" : "155", "Gebuehr" : null},{"TnNr" : "171", "Gebuehr" : null},{"TnNr" : "173", "Gebuehr" : 400},{"TnNr" : "185", "Gebuehr" : 450}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "2", "KursNr" : "I09", "Datum" : "23.04.2018", "Ort" : "Hamburg", "Kursleiter" : "29594", "Teilnehmer" : [{"TnNr" : "187", "Gebuehr" : null}]}
+    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
+    {"AngNr" : "3", "KursNr" : "I09", "Datum" : "29.05.2018", "Ort" : "Muenchen", "Kursleiter" : "29594", "Teilnehmer" : []}
 
 
 // KURSDATEN UND KURSE
-
 POST _bulk
-    {"index" : { "_index" : "kurs", "_type" : "_doc", "_id" : "G08"}}
+    {"index" : { "_index" : "kurs", "_type" : "_doc"}}
     {"KursNr" : "G08", "Titel" : "Grundlagen I", "KursLit" : { "Bestand" : "4", "Bedarf" : "2", "Preis" : "10.50" }}
-    {"index" : { "_index" : "kurs", "_type" : "_doc", "_id" : "G10"}}
+    {"index" : { "_index" : "kurs", "_type" : "_doc"}}
     {"KursNr" : "G10", "Titel" : "Grundlagen II"}
-    {"index" : { "_index" : "kurs", "_type" : "_doc", "_id" : "P13"}}
+    {"index" : { "_index" : "kurs", "_type" : "_doc"}}
     {"KursNr" : "P13", "Titel" : "C-Programmierung", "KursLit" : { "Bestand" : "3", "Bedarf" : "5", "Preis" : "15.20" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" } ]}
-    {"index" : { "_index" : "kurs", "_type" : "_doc", "_id" : "I09"}}
+    {"index" : { "_index" : "kurs", "_type" : "_doc"}}
     {"KursNr" : "I09", "Titel" : "Datenbanken", "KursLit" : { "Bestand" : "2", "Bedarf" : "6", "Preis" : "8.00" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" }, { "VorNr" : "P13" } ]}
 
-// FUEHRT_DURCH UND KURSLEITER
+// KURSLEITER
 POST _bulk
-    {"index" : { "_index" : "kursleiter", "_type" : "_doc", "_id" : "27183"} }
+    {"index" : { "_index" : "kursleiter", "_type" : "_doc"} }
     {"PersNr" : "27183", "Name" : "Meier, I.", "Gehalt" : "3400.80"}
-    {"index" : { "_index" : "kursleiter", "_type" : "_doc", "_id" : "29594"} }
+    {"index" : { "_index" : "kursleiter", "_type" : "_doc"} }
     {"PersNr" : "29594", "Name" : "Schulze, H.", "Gehalt" : "3890.20"}
-    {"index" : { "_index" : "kursleiter", "_type" : "_doc", "_id" : "38197"} }
+    {"index" : { "_index" : "kursleiter", "_type" : "_doc"} }
     {"PersNr" : "38197", "Name" : "Huber, L.", "Gehalt" : "4200.10"}
-    {"index" : { "_index" : "kursleiter", "_type" : "_doc", "_id" : "43325"} }
+    {"index" : { "_index" : "kursleiter", "_type" : "_doc"} }
     {"PersNr" : "43325", "Name" : "Mueller, K.", "Gehalt" : "3400.80"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "G08-1"} }
-    {"Pers" : "38197"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "G08-2"} }
-    {"Pers" : "38197"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "G10-1"} }
-    {"Pers" : "43325"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "G10-2"} }
-    {"Pers" : "29594"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "P13-1"} }
-    {"Pers" : "27183"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "P13-2"} }
-    {"Pers" : "27183"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Pers" : "29594"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "I09-2"} }
-    {"Pers" : "29594"}
-    {"index" : { "_index" : "fuehrt_durch", "_type" : "_doc", "_id" : "I09-3"} }
-    {"Pers" : "29594"}
 
 // NIMMT_TEIL UND TEILNEHMER
 POST _bulk
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "143"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "143", "Name" : "Schmidt, M.", "Ort" : "Wedel"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "145"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "145", "Name" : "Huber, Chr.", "Ort" : "Pinneberg"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "146"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "146", "Name" : "Abele, I.", "Ort" : "Holm"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "149"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "149", "Name" : "Kircher, B.", "Ort" : "Hamburg"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "155"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "155", "Name" : "Meier, W.", "Ort" : "Wedel"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "171"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "171", "Name" : "Moeller, H.", "Ort" : "Wedel"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "173"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "173", "Name" : "Schulze, B.", "Ort" : "Holm"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "177"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "177", "Name" : "Mons, F.", "Ort" : "Blankenese"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "185"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "185", "Name" : "Meier, K.", "Ort" : "Rissen"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "187"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "187", "Name" : "Karstens, L.", "Ort" : "Hamburg"}
-    {"index" : { "_index" : "teilnehmer", "_type" : "_doc", "_id" : "194"} }
+    {"index" : { "_index" : "teilnehmer", "_type" : "_doc"} }
     {"TnNr" : "194", "Name" : "Gerstner, M.", "Ort" : "Rissen"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "G08-2"} }
-    {"Tn" : "143", "Gebuehr" : "500"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "P13-2"} }
-    {"Tn" : "143", "Gebuehr" : "400"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "G08-1"} }
-    {"Tn" : "145"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "P13-1"} }
-    {"Tn" : "146", "Gebuehr" : "300"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Tn" : "146"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "P13-2"} }
-    {"Tn" : "149", "Gebuehr" : "350"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Tn" : "155"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Tn" : "171"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Tn" : "173", "Gebuehr" : "400"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "P13-2"} }
-    {"Tn" : "177"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-1"} }
-    {"Tn" : "185", "Gebuehr" : "450"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "I09-2"} }
-    {"Tn" : "187"}
-    {"index" : { "_index" : "nimmt_teil", "_type" : "_doc", "_id" : "P13-1"} }
-    {"Tn" : "194"}

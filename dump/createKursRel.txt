@@ -171,3 +171,45 @@ insert into KursLit values('P13', 3, 5, 15.20);
 
 commit;
 
+
+
+// --------------------------------------------------------------------
+PUT angebot
+{
+  "settings": {
+    "number_of_shards": 1
+  },
+  "mappings": {
+    "_doc" : {
+      "properties": {
+        "AngNr": {
+          "type": "keyword"
+        },
+        "KursNr": {
+          "type": "keyword"
+        },
+        "Datum": {
+          "type": "date",
+          "format" : "dd.MM.yyyy"
+        },
+        "Ort": {
+          "type": "text"
+        }
+        ,
+        "Kursleiter": {
+          "type": "keyword"
+        }
+        ,
+        "Teilnehmer": {
+          "type": "nested",
+          "properties": {
+            "TnNr": {
+              "type": "keyword"
+            },
+            "Gebuehr": {
+              "type": "double"
+            }
+          }
+       }
+  }
+}
