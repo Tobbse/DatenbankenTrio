@@ -1,0 +1,30 @@
+Problems:
+
+- strukturierte Daten bzw. gut zu normalisierende Daten passen schlecht in noSQL
+- in elastic findet keine normalisierung der daten statt, die daten werden in der regel in ihrer vorhandenen Form in die Datenbank geladen und dann nur noch abgefragt
+- keine subqueries beim updaten (vorheriger wert nicht vorhanden beim update)
+- keine SQL Standartfunktionen um die daten zu manipulieren oder beim Abfragen formatiert auszugeben
+- keine tabellen structur mit flachen zeilen sondern object struktur
+- doppelte datenhaltung (für unser beispiel nicht sinnvoll, in elastic aber gewünscht)
+
+
+Elastic Search:
+
+    Allgemein: https://de.wikipedia.org/wiki/Elasticsearch //TODO hier sind auch noch ein paar kleine infos um zeit voll zu bekommen
+
+- Elasticsearch ist eine verteilte RESTful-Suchmaschine und -Analytics Engine, die eine wachsende Zahl von Anwendungsfällen abdecken kann.
+- Als Kernstück des Elastic Stack speichert sie Ihre Daten an einem zentralen Ort, sodass Sie in ihnen leicht Bekanntes finden und Unbekanntes aufdecken können.
+
+- Möglichkeiten:
+    - Abfragen -> viele verschiedene Suchabfragen möglich, auch in geo-daten
+    - Analysieren -> anzeige der passendsten dukumente (durch score werte)
+- Vorteile:
+    - Geschwindigkeit -> hohe Abruf geschwindigkeit durch automatische indexierung und unterstützungen für volltextsuche und ähnliches
+    - Skalierbarkeit -> mehrere Knoten möglich
+    - Resilienz -> verteilte Umgebung und clusterübergreifende Replikation
+    - Flexibilität -> verschiedenene Möglichkeiten für verschiedene Daten App Search, Security Analytics, Metriken und Logging
+    - Unterstützung aller gängigen Programmiersprachen
+    - HADOOP UND SPARK -> elastic als suchmaschine und analyse tool für big data mit hadoop connector
+
+ER-Modell:
+ ??? //TODO sieht doch prinzipiell fast aus wie vorher, nur dass wir alles in einen Index packen
