@@ -1,5 +1,5 @@
 ################################################
-################ AUSGEBEN ################
+################### AUFGABEN ###################
 ################################################
 a. alle Orte, an denen Kurse durchgeführt werden.
 
@@ -14,19 +14,30 @@ GET /angebot/_search?filter_path=aggregations.Orte.buckets.key
       }
     }
 
+b. die Teilnehmer aus Stuttgart. - interpretation Wohnort/Herkunft Stuttgart (b1) oder Kurs in Stuttgart (b2) ?!
 
-b. die Teilnehmer aus Stuttgart.
-
-GET /teilnehmer/_search
+GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
 {
   "query": {
-    "bool": {
-      "must": {
-        "match":
-          {
+    "nested": {
+      "path": "Teilnehmer"",
+      "query": {
+        "must": {
+          "match": {
             "Ort": "Stuttgart"
           }
+        }
+      }
+    }
+  }
+}
 
+GET /angebot/_search?filter_path=hits.hits.*.Ort
+{
+  "query": {
+    "must": {
+      "match": {
+        "Ort": "Stuttgart"
       }
     }
   }
@@ -35,28 +46,58 @@ GET /teilnehmer/_search
 
 c. die Kursleiter mit einem Gehalt zwischen 3000 € und 4000 €, sortiert nach Namen.
 
-GET /kursleiter/_search
+GET /angebot/_search?filter_path=hits.hits.*.Kursleiter
 {
   "query": {
-    "range": {
-      "Gehalt": {
-        "gte": 3000,
-        "lte": 4000
-      }
+    "nested": {
+      "path": "Kursleiter",
+      "query": {
+        "range": {
+          "Gehalt": {
+            "gte": 3000,
+            "lte": 4000
+          }
+        }
+      },
+      "sort": [
+        "Name"
+      ]
     }
   }
 }
 
 d. die Kurstitel mit Datum und Ort, an dem sie stattfinden.
 
-
-
+//TODO mit aggs lösen
+GET /angebot/_search?filter_path=hits.hits.*.Kurs.Kurstitel,filter_path=hits.hits.*.Datum,filter_path=hits.hits.*.Ort
+{
+  "aggs" : {
+    "Orte" : {
+      "terms" : {
+        "field" : "Ort"
+      }
+    }
+  },
+  "query": {
+    "nested": {
+      "path": "Kurs",
+      "query": {
+        "range": {
+          "Gehalt": {
+            "gte": 3000,
+            "lte": 4000
+          }
+        }
+      }
+    }
+  }
+}
 
 e. Anfrage d) mit zusätzlicher Ausgabe der Kursleiter.
 
+//TODO siehe d nur mit auf Kursleiter filtern
 
-
-f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten
+f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten Sie auf vernünftige Spaltenüberschriften. Die Ausgabe soll nach Kursen sortiert erfolgen.
 
 
 
@@ -97,7 +138,25 @@ n. alle Paare von Kursleitern, die denselben Kurs halten, und den entsprechenden
 ################################################
 a. alle Angebote vom Jahr 2018 auf das Jahr 2019
 
-
+POST angebot/_update_by_query
+{
+  "query": {
+    "filtered": {
+      "filter": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "Datum": "2018"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "script" : "ctx._source.Datum = //TODO add year -> problem keine subqueries wie in sql?!
+}
 
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
 
@@ -108,6 +167,22 @@ b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck s
 
 a. die Kursliteratur für den Kurs „C-Programmierung“
 
-
+POST twitter/_update_by_query?conflicts=proceed
+{
+  "query": {
+    "term": {
+      "user": "kimchy"
+    }
+  }
+}
 
 b. alle Kurse mit weniger als zwei Teilnehmern
+
+POST angebot/_delete_by_query
+{
+  "query": {
+    "match": {
+      //TODO
+    }
+  }
+}
