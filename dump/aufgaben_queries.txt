@@ -175,6 +175,20 @@ POST angebot/_update_by_query
 
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
 
+POST angebot/_update_by_query
+{
+  "query": {
+    "bool": {
+      "must": {
+        "match": {
+          "Ort": "Kiel"
+        }
+      }
+    }
+  },
+  "script": "ctx._source.Ort = 'Lübeck'"
+}
+
 
 ################################################
 ################ LÖSCHEN ################
@@ -182,13 +196,23 @@ b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck s
 
 a. die Kursliteratur für den Kurs „C-Programmierung“
 
-POST twitter/_update_by_query?conflicts=proceed
+POST angebot/Kurs/_update_by_query
 {
   "query": {
-    "term": {
-      "user": "kimchy"
+    "bool": {
+      "must": [
+        {
+          "exists": {
+            "field": "KursLit"
+          }
+        },
+        "match" : {
+            "Name" : "C-Programmierung"
+        }
+      ]
     }
-  }
+  },
+  "script": ctx._source.remove("KursLit")
 }
 
 b. alle Kurse mit weniger als zwei Teilnehmern
