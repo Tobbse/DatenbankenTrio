@@ -16,29 +16,17 @@ GET /angebot/_search?filter_path=aggregations.Orte.buckets.key
 
 b. die Teilnehmer aus Stuttgart. - interpretation Wohnort/Herkunft Stuttgart (b1) oder Kurs in Stuttgart (b2) ?!
 
-GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
+GET /angebot/_doc/_search?filter_path=hits.hits.inner_hits.Teilnehmer.hits.hits._source
 {
   "query": {
     "nested": {
-      "path": "Teilnehmer"",
+      "path": "Teilnehmer",
       "query": {
-        "must": {
-          "match": {
-            "Ort": "Stuttgart"
-          }
+        "match": {
+          "Teilnehmer.Ort": "Stuttgart"
         }
-      }
-    }
-  }
-}
-
-GET /angebot/_search?filter_path=hits.hits.*.Ort
-{
-  "query": {
-    "must": {
-      "match": {
-        "Ort": "Stuttgart"
-      }
+      },
+      "inner_hits": {}
     }
   }
 }
@@ -46,6 +34,7 @@ GET /angebot/_search?filter_path=hits.hits.*.Ort
 
 c. die Kursleiter mit einem Gehalt zwischen 3000 € und 4000 €, sortiert nach Namen.
 
+// TODO zeigt duplicates
 GET /angebot/_search?filter_path=hits.hits.*.Kursleiter
 {
   "query": {
@@ -53,39 +42,37 @@ GET /angebot/_search?filter_path=hits.hits.*.Kursleiter
       "path": "Kursleiter",
       "query": {
         "range": {
-          "Gehalt": {
+          "Kursleiter.Gehalt": {
             "gte": 3000,
             "lte": 4000
           }
         }
-      },
-      "sort": [
-        "Name"
-      ]
+      }
+    }
+  },"sort": {
+    "Kursleiter.Name": {
+      "order": "asc",
+      "nested": {
+        "path": "Kursleiter"
+      }
     }
   }
 }
 
 d. die Kurstitel mit Datum und Ort, an dem sie stattfinden.
 
-//TODO mit aggs lösen
-GET /angebot/_search?filter_path=hits.hits.*.Kurs.Kurstitel,filter_path=hits.hits.*.Datum,filter_path=hits.hits.*.Ort
+GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort
 {
-  "aggs" : {
-    "Orte" : {
-      "terms" : {
-        "field" : "Ort"
-      }
-    }
-  },
-  "query": {
-    "nested": {
-      "path": "Kurs",
-      "query": {
-        "range": {
-          "Gehalt": {
-            "gte": 3000,
-            "lte": 4000
+  "aggs": {
+    "Kurse": {
+      "nested": {
+        "path": "Kurs"
+      },
+      "aggs": {
+        "Titel": {
+          "terms": {
+            "field": "Kurs.Titel",
+            "size": 100
           }
         }
       }
@@ -95,14 +82,48 @@ GET /angebot/_search?filter_path=hits.hits.*.Kurs.Kurstitel,filter_path=hits.hit
 
 e. Anfrage d) mit zusätzlicher Ausgabe der Kursleiter.
 
-//TODO siehe d nur mit auf Kursleiter filtern
+GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort,hits.hits.*.Kursleiter
+{
+  "aggs": {
+    "Kurse": {
+      "nested": {
+        "path": "Kurs"
+      },
+      "aggs": {
+        "Titel": {
+          "terms": {
+            "field": "Kurs.Titel",
+            "size": 100
+          }
+        }
+      }
+    }
+  }
+}
 
 f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten Sie auf vernünftige Spaltenüberschriften. Die Ausgabe soll nach Kursen sortiert erfolgen.
 
 
-
 g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
 
+// ist leer, weil es wohl wirklich keine gibt. == in != ändern und man findet was.
+
+GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "script": {
+            "script": {
+              "source": "doc['Ort'].value == doc['Teilnehmer.Ort']"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
 
 
 h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teilnehmer gibt.
@@ -140,23 +161,17 @@ a. alle Angebote vom Jahr 2018 auf das Jahr 2019
 
 POST angebot/_update_by_query
 {
-  "query": {
-    "filtered": {
-      "filter": {
-        "bool": {
-          "must": [
-            {
-              "match": {
-                "Datum": "2018"
-              }
+    "query": {
+        "range" : {
+            "Datum.year" : {
+                "gte": "01.01.2018",
+                "lte": "31.12.2018"
+
             }
-          ]
         }
-      }
     }
-  },
-  "script" : "ctx._source.Datum = //TODO add year -> problem keine subqueries wie in sql?!
 }
+  "script" : "ctx._source.Datum = '2019' // TODO keine ahnung wie ich hier jetzt nur das jahr aber nicht den rest verändern kann!
 
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
 

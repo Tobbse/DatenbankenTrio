@@ -4,7 +4,7 @@ PUT angebot
     "number_of_shards": 1
   },
   "mappings": {
-    "_doc" : {
+    "_doc": {
       "properties": {
         "AngNr": {
           "type": "keyword"
@@ -13,10 +13,12 @@ PUT angebot
           "type": "nested",
           "properties": {
             "KursNr": {
-              "type": "text"
+              "type": "text",
+              "fielddata": true
             },
             "Titel": {
-              "type": "text"
+              "type": "text",
+              "fielddata": true
             },
             "KursLit": {
               "type": "nested",
@@ -44,13 +46,12 @@ PUT angebot
         },
         "Datum": {
           "type": "date",
-          "format" : "dd.MM.yyyy"
+          "format": "dd.MM.yyyy"
         },
         "Ort": {
           "type": "text",
           "fielddata": true
-        }
-        ,
+        },
         "Kursleiter": {
           "type": "nested",
           "properties": {
@@ -58,27 +59,31 @@ PUT angebot
               "type": "keyword"
             },
             "Name": {
-              "type": "text"
+              "type": "text",
+              "fielddata": true
             },
             "Gehalt": {
               "type": "double"
             }
+          }
         },
         "Teilnehmer": {
           "type": "nested",
           "properties": {
             "TnNr": {
-               "type": "keyword"
+              "type": "keyword"
             },
             "Name": {
-              "type": "text"
+              "type": "text",
+              "fielddata": true
             },
             "Ort": {
-              "type": "text"
+              "type": "text",
+              "fielddata": true
             },
             "Gebuehr": {
               "type": "double",
-              "null_value": 0.0
+              "null_value": 0
             }
           }
         }
@@ -90,21 +95,21 @@ PUT angebot
 // ------------------------------------------------------------------------------------------------------------
 
 POST _bulk
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "1", "Kurs" : {"KursNr" : "G08", "Titel" : "Grundlagen I", "KursLit" : { "Bestand" : "4", "Bedarf" : "2", "Preis" : "10.50" }}, "Datum" : "13.10.2018", "Ort" : "Wedel", "Kursleiter" : {"PersNr" : "38197", "Name" : "Huber, L.", "Gehalt" : "4200.10"}, "Teilnehmer" : [{"TnNr" : "145", "Name" : "Huber, Chr.", "Ort" : "Pinneberg", "Gebuehr" : null}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "2", "Kurs" : {"KursNr" : "G08", "Titel" : "Grundlagen I", "KursLit" : { "Bestand" : "4", "Bedarf" : "2", "Preis" : "10.50" }}, "Datum" : "24.11.2018", "Ort" : "Ulm", "Kursleiter" : {"PersNr" : "38197", "Name" : "Huber, L.", "Gehalt" : "4200.10"}, "Teilnehmer" : [{"TnNr" : "143", "Name" : "Schmidt, M.", "Ort" : "Wedel", "Gebuehr" : 500}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "1", "Kurs" : {"KursNr" : "G10", "Titel" : "Grundlagen II"}}, "Datum" : "01.12.2018", "Ort" : "Kiel", "Kursleiter" : {"PersNr" : "43325", "Name" : "Mueller, K.", "Gehalt" : "3400.80"}, "Teilnehmer" : []}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "2", "Kurs" : {"KursNr" : "G10", "Titel" : "Grundlagen II"}}, "Datum" : "15.02.2018", "Ort" : "Hamburg", "Kursleiter" : {"PersNr" : "29594", "Name" : "Schulze, H.", "Gehalt" : "3890.20"}, "Teilnehmer" : []}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "1", "Kurs" : {"KursNr" : "P13", "Titel" : "C-Programmierung", "KursLit" : { "Bestand" : "3", "Bedarf" : "5", "Preis" : "15.20" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" } ]}, "Datum" : "28.05.2018", "Ort" : "Berlin", "Kursleiter" : {"PersNr" : "27183", "Name" : "Meier, I.", "Gehalt" : "3400.80"}, "Teilnehmer" : [{"TnNr" : "194", "Name" : "Gerstner, M.", "Ort" : "Rissen", "Gebuehr" : null},{"TnNr" : "146", "Name" : "Abele, I.", "Ort" : "Holm", "Gebuehr" : 300}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "2", "Kurs" : {"KursNr" : "P13", "Titel" : "C-Programmierung", "KursLit" : { "Bestand" : "3", "Bedarf" : "5", "Preis" : "15.20" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" } ]}, "Datum" : "01.07.2018", "Ort" : "Wedel", "Kursleiter" : {"PersNr" : "27183", "Name" : "Meier, I.", "Gehalt" : "3400.80"}, "Teilnehmer" : [{"TnNr" : "143", "Name" : "Schmidt, M.", "Ort" : "Wedel", "Gebuehr" : 400}, {"TnNr" : "149", "Name" : "Kircher, B.", "Ort" : "Hamburg", "Gebuehr" : 350}, {"TnNr" : "177", "Name" : "Mons, F.", "Ort" : "Blankenese", "Gebuehr" : null}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "1", "Kurs" : {"KursNr" : "I09", "Titel" : "Datenbanken", "KursLit" : { "Bestand" : "2", "Bedarf" : "6", "Preis" : "8.00" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" }, { "VorNr" : "P13" } ]}, "Datum" : "27.03.2018", "Ort" : "Kiel", "Kursleiter" : {"PersNr" : "29594", "Name" : "Schulze, H.", "Gehalt" : "3890.20"}, "Teilnehmer" : [{"TnNr" : "146", "Name" : "Abele, I.", "Ort" : "Holm", "Gebuehr" : null},{"TnNr" : "155", "Name" : "Meier, W.", "Ort" : "Wedel", "Gebuehr" : null},{"TnNr" : "171", "Name" : "Moeller, H.", "Ort" : "Wedel", "Gebuehr" : null},{"TnNr" : "173", "Name" : "Schulze, B.", "Ort" : "Holm", "Gebuehr" : 400},{"TnNr" : "185", "Name" : "Meier, K.", "Ort" : "Rissen", "Gebuehr" : 450}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "2", "Kurs" : {"KursNr" : "I09", "Titel" : "Datenbanken", "KursLit" : { "Bestand" : "2", "Bedarf" : "6", "Preis" : "8.00" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" }, { "VorNr" : "P13" } ]}, "Datum" : "23.04.2018", "Ort" : "Hamburg", "Kursleiter" : {"PersNr" : "29594", "Name" : "Schulze, H.", "Gehalt" : "3890.20"}, "Teilnehmer" : [{"TnNr" : "187", "Name" : "Karstens, L.", "Ort" : "Hamburg", "Gebuehr" : null}]}
-    {"index" : { "_index" : "angebot", "_type" : "_doc"}}
-    {"AngNr" : "3", "Kurs" : {"KursNr" : "I09", "Titel" : "Datenbanken", "KursLit" : { "Bestand" : "2", "Bedarf" : "6", "Preis" : "8.00" }, "Vorraus" : [ { "VorNr" : "G08" }, { "VorNr" : "G10" }, { "VorNr" : "P13" } ]}, "Datum" : "29.05.2018", "Ort" : "Muenchen", "Kursleiter" : {"PersNr" : "29594", "Name" : "Schulze, H.", "Gehalt" : "3890.20"}, "Teilnehmer" : []}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"1","Kurs":{"KursNr":"G08","Titel":"Grundlagen I","KursLit":{"Bestand":"4","Bedarf":"2","Preis":"10.50"}},"Datum":"13.10.2018","Ort":"Wedel","Kursleiter":{"PersNr":"38197","Name":"Huber, L.","Gehalt":"4200.10"},"Teilnehmer":[{"TnNr":"145","Name":"Huber, Chr.","Ort":"Pinneberg","Gebuehr":null}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"2","Kurs":{"KursNr":"G08","Titel":"Grundlagen I","KursLit":{"Bestand":"4","Bedarf":"2","Preis":"10.50"}},"Datum":"24.11.2018","Ort":"Ulm","Kursleiter":{"PersNr":"38197","Name":"Huber, L.","Gehalt":"4200.10"},"Teilnehmer":[{"TnNr":"143","Name":"Schmidt, M.","Ort":"Wedel","Gebuehr":500}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"1","Kurs":{"KursNr":"G10","Titel":"Grundlagen II"},"Datum":"01.12.2018","Ort":"Kiel","Kursleiter":{"PersNr":"43325","Name":"Mueller, K.","Gehalt":"3400.80"},"Teilnehmer":[]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"2","Kurs":{"KursNr":"G10","Titel":"Grundlagen II"},"Datum":"15.02.2018","Ort":"Hamburg","Kursleiter":{"PersNr":"29594","Name":"Schulze, H.","Gehalt":"3890.20"},"Teilnehmer":[]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"1","Kurs":{"KursNr":"P13","Titel":"C-Programmierung","KursLit":{"Bestand":"3","Bedarf":"5","Preis":"15.20"},"Vorraus":[{"VorNr":"G08"},{"VorNr":"G10"}]},"Datum":"28.05.2018","Ort":"Berlin","Kursleiter":{"PersNr":"27183","Name":"Meier, I.","Gehalt":"3400.80"},"Teilnehmer":[{"TnNr":"194","Name":"Gerstner, M.","Ort":"Rissen","Gebuehr":null},{"TnNr":"146","Name":"Abele, I.","Ort":"Holm","Gebuehr":300}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"2","Kurs":{"KursNr":"P13","Titel":"C-Programmierung","KursLit":{"Bestand":"3","Bedarf":"5","Preis":"15.20"},"Vorraus":[{"VorNr":"G08"},{"VorNr":"G10"}]},"Datum":"01.07.2018","Ort":"Wedel","Kursleiter":{"PersNr":"27183","Name":"Meier, I.","Gehalt":"3400.80"},"Teilnehmer":[{"TnNr":"143","Name":"Schmidt, M.","Ort":"Wedel","Gebuehr":400},{"TnNr":"149","Name":"Kircher, B.","Ort":"Hamburg","Gebuehr":350},{"TnNr":"177","Name":"Mons, F.","Ort":"Blankenese","Gebuehr":null}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"1","Kurs":{"KursNr":"I09","Titel":"Datenbanken","KursLit":{"Bestand":"2","Bedarf":"6","Preis":"8.00"},"Vorraus":[{"VorNr":"G08"},{"VorNr":"G10"},{"VorNr":"P13"}]},"Datum":"27.03.2018","Ort":"Kiel","Kursleiter":{"PersNr":"29594","Name":"Schulze, H.","Gehalt":"3890.20"},"Teilnehmer":[{"TnNr":"146","Name":"Abele, I.","Ort":"Holm","Gebuehr":null},{"TnNr":"155","Name":"Meier, W.","Ort":"Wedel","Gebuehr":null},{"TnNr":"171","Name":"Moeller, H.","Ort":"Wedel","Gebuehr":null},{"TnNr":"173","Name":"Schulze, B.","Ort":"Holm","Gebuehr":400},{"TnNr":"185","Name":"Meier, K.","Ort":"Rissen","Gebuehr":450}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"2","Kurs":{"KursNr":"I09","Titel":"Datenbanken","KursLit":{"Bestand":"2","Bedarf":"6","Preis":"8.00"},"Vorraus":[{"VorNr":"G08"},{"VorNr":"G10"},{"VorNr":"P13"}]},"Datum":"23.04.2018","Ort":"Hamburg","Kursleiter":{"PersNr":"29594","Name":"Schulze, H.","Gehalt":"3890.20"},"Teilnehmer":[{"TnNr":"187","Name":"Karstens, L.","Ort":"Hamburg","Gebuehr":null}]}
+{"index":{"_index":"angebot","_type":"_doc"}}
+{"AngNr":"3","Kurs":{"KursNr":"I09","Titel":"Datenbanken","KursLit":{"Bestand":"2","Bedarf":"6","Preis":"8.00"},"Vorraus":[{"VorNr":"G08"},{"VorNr":"G10"},{"VorNr":"P13"}]},"Datum":"29.05.2018","Ort":"Muenchen","Kursleiter":{"PersNr":"29594","Name":"Schulze, H.","Gehalt":"3890.20"},"Teilnehmer":[]}
