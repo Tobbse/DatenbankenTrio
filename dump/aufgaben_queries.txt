@@ -14,6 +14,7 @@ GET /angebot/_search?filter_path=aggregations.Orte.buckets.key
       }
     }
 
+//------------------------------------------------------------------------------
 b. die Teilnehmer aus Stuttgart. - interpretation Wohnort/Herkunft Stuttgart (b1) oder Kurs in Stuttgart (b2) ?!
 
 GET /angebot/_doc/_search?filter_path=hits.hits.inner_hits.Teilnehmer.hits.hits._source
@@ -31,7 +32,7 @@ GET /angebot/_doc/_search?filter_path=hits.hits.inner_hits.Teilnehmer.hits.hits.
   }
 }
 
-
+//------------------------------------------------------------------------------
 c. die Kursleiter mit einem Gehalt zwischen 3000 € und 4000 €, sortiert nach Namen.
 
 // TODO zeigt duplicates
@@ -59,6 +60,7 @@ GET /angebot/_search?filter_path=hits.hits.*.Kursleiter
   }
 }
 
+//------------------------------------------------------------------------------
 d. die Kurstitel mit Datum und Ort, an dem sie stattfinden.
 
 GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort
@@ -80,6 +82,7 @@ GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.h
   }
 }
 
+//------------------------------------------------------------------------------
 e. Anfrage d) mit zusätzlicher Ausgabe der Kursleiter.
 
 GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort,hits.hits.*.Kursleiter
@@ -101,11 +104,11 @@ GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.h
   }
 }
 
+//------------------------------------------------------------------------------
 f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten Sie auf vernünftige Spaltenüberschriften. Die Ausgabe soll nach Kursen sortiert erfolgen.
 
-
+//------------------------------------------------------------------------------
 g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
-
 // ist leer, weil es wohl wirklich keine gibt. == in != ändern und man findet was.
 
 GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
@@ -125,31 +128,76 @@ GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
   }
 }
 
-
+//------------------------------------------------------------------------------
 h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teilnehmer gibt.
 
 
-
+//------------------------------------------------------------------------------
 i. alle Kurse (egal welches Angebot) mit mindestens 5 Teilnehmern.
 
 
-
+//------------------------------------------------------------------------------
 j. alle Meier, sowohl Teilnehmer wie auch Kursleiter.
 
+// TODO findet alle meiers, aber zeigt auch andere an wtf?
+
+GET angebot/_search?filter_path=hits.hits._source.Teilnehmer.Name,hits.hits._source.Kursleiter.Name
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "nested": {
+            "path": "Teilnehmer",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match_phrase": {
+                      "Teilnehmer.Name": "Meier"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "nested": {
+            "path": "Kursleiter",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match_phrase": {
+                      "Kursleiter.Name": "Meier"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
 
 
+//------------------------------------------------------------------------------
 k. die Kurstitel mit der jeweiligen Anzahl der Angebote.
+// TODO gleiches problem wie unten, wie zähle ich die Objekte ohne extra query?
 
 
-
+//------------------------------------------------------------------------------
 l. die Kurstitel mit der Anzahl der Voraussetzungen, die mindestens 2 Voraussetzungen haben. Die Ausgabe soll so erfolgen, dass die Kurse mit den meisten Voraussetzungen zuerst kommen.
 
 
-
+//------------------------------------------------------------------------------
 m. für alle Kurse (Titel ausgeben) das durchschnittliche Gehalt der  Kursleiter, die ein Angebot dieses Kurses durchführen (nach diesem Durchschnitt aufsteigend sortiert).
 
 
-
+//------------------------------------------------------------------------------
 n. alle Paare von Kursleitern, die denselben Kurs halten, und den entsprechenden Kurstitel. Geben Sie jedes Paar nur einmal aus.
 
 
@@ -173,6 +221,7 @@ POST angebot/_update_by_query
 }
   "script" : "ctx._source.Datum = '2019' // TODO keine ahnung wie ich hier jetzt nur das jahr aber nicht den rest verändern kann!
 
+//------------------------------------------------------------------------------
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
 
 POST angebot/_update_by_query
@@ -196,32 +245,75 @@ POST angebot/_update_by_query
 
 a. die Kursliteratur für den Kurs „C-Programmierung“
 
-POST angebot/Kurs/_update_by_query
+POST angebot/_update_by_query
 {
   "query": {
-    "bool": {
-      "must": [
-        {
-          "exists": {
-            "field": "KursLit"
-          }
-        },
-        "match" : {
-            "Name" : "C-Programmierung"
+    "nested": {
+      "path": "Kurs",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "Kurs.Titel": "C-Programmierung"
+              }
+            }
+          ]
         }
-      ]
+      }
     }
   },
-  "script": ctx._source.remove("KursLit")
+  "script": "ctx._source.Kurs.KursLit = null"
 }
 
+ODER:
+
+POST angebot/_update_by_query
+{
+  "query": {
+    "nested": {
+      "path": "Kurs",
+      "query": {
+        "bool": {
+          "must": [
+            {
+              "match": {
+                "Kurs.Titel": "C-Programmierung"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "script": "ctx._source.Kurs.remove('KursLit')"
+}
+
+//------------------------------------------------------------------------------
 b. alle Kurse mit weniger als zwei Teilnehmern
+
+// TODO klappt so noch nicht, weil auf das object "Kurs" nicht so zugegriffen werden kann. das geht nur mit
+// TODO einfachen fields, nicht mit objekten.
+// TODO es gibt auch eine COUNT api, die sollte man mal auschecken, vielleicht kann man das mit dem DELETE
+// TODO irgendwie kombinieren.
 
 POST angebot/_delete_by_query
 {
   "query": {
-    "match": {
-      //TODO
+    "nested": {
+      "path": "Kurs",
+      "query": {
+        "bool": {
+          "must": {
+            "script": {
+              "script": {
+                "lang": "painless",
+                "inline": "doc['Kurs.Teilnehmer'].values.length > 2"
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
