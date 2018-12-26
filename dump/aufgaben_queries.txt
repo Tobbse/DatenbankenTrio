@@ -107,6 +107,35 @@ GET /angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.h
 //------------------------------------------------------------------------------
 f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten Sie auf vernünftige Spaltenüberschriften. Die Ausgabe soll nach Kursen sortiert erfolgen.
 
+// TODO was meint er mit "Achten Sie auf vernünftige Spaltenüberschriften"?
+// TODO sicherstellen dass NULL ausgegeben wird wenn keine voraussetzung da ist.
+
+// TODO aktuell zeigt diese query nur alle VorNr der Voraussetzungen der Kurse. Diese VorNr müssten jetzt genutzt werden um die Titel der Kurse herauszufinden. Oder wir müssen das Mapping umbauen und auch den Tite mit in Voraus packen.
+GET /angebot/_search?filter_path=hits.hits.*.Kurs.Voraus
+{
+  "aggs": {
+    "Kurs": {
+      "nested": {
+        "path": "Kurs"
+      },
+      "aggs": {
+        "Voraus": {
+          "terms": {
+            "field": "Kurs.Voraus"
+          },
+          "aggs": {
+            "VorNr": {
+              "terms": {
+                "field": "Kurs.Voraus.VorNr"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 //------------------------------------------------------------------------------
 g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
 // ist leer, weil es wohl wirklich keine gibt. == in != ändern und man findet was.
@@ -134,6 +163,7 @@ h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teil
 
 //------------------------------------------------------------------------------
 i. alle Kurse (egal welches Angebot) mit mindestens 5 Teilnehmern.
+// TODO wie unten, ist hier das problem, die objekte zu zählen. felder wären easy, objekte nicht.
 
 
 //------------------------------------------------------------------------------
