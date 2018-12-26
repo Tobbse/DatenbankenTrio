@@ -138,7 +138,7 @@ GET /angebot/_search?filter_path=hits.hits.*.Kurs.Voraus
 
 //------------------------------------------------------------------------------
 g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
-// ist leer, weil es wohl wirklich keine gibt. == in != ändern und man findet was.
+// response ist nur leer, weil es wohl wirklich keine gibt. einfach == in != ändern und man findet was und sieht dass es klappt.
 
 GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
 {
@@ -160,10 +160,85 @@ GET /angebot/_search?filter_path=hits.hits.*.Teilnehmer
 //------------------------------------------------------------------------------
 h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teilnehmer gibt.
 
+GET angebot/_search?filter_path=*.*.*.Kurs.KursNr,*.*.*.AngNr
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "nested": {
+            "path": "Teilnehmer",
+            "query": {
+              "bool": {
+                "filter": {
+                  "exists": {
+                    "field": "Teilnehmer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
+
 
 //------------------------------------------------------------------------------
 i. alle Kurse (egal welches Angebot) mit mindestens 5 Teilnehmern.
-// TODO wie unten, ist hier das problem, die objekte zu zählen. felder wären easy, objekte nicht.
+
+// das ist völlig behindert. zeigt für einen bestimmten kurs an ob es mehr als 5 gibt (response ist sonst leer), aber kp wie wir das für alle machen
+// hab jetzt grad keine lust mehr X)
+GET angebot/_search?filter_path=aggregations.result.buckets.Teilnehmer.doc_count
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "nested": {
+            "path": "Kurs",
+            "query": {
+              "bool": {
+                "must": [
+                  {
+                    "match": {
+                      "Kurs.Titel": "C-Programmierung"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "result": {
+      "terms": {
+        "script": "'a big trick because we cannot use multiple aggs in the top level'"
+      },
+      "aggs": {
+        "Teilnehmer": {
+          "nested": {
+            "path": "Teilnehmer"
+          }
+        },
+        "sales_bucket_filter": {
+          "bucket_selector": {
+            "buckets_path": {
+              "amountOfParticipants": "Teilnehmer._count"
+            },
+            "script": "params.amountOfParticipants > 4"
+          }
+        }
+      }
+    }
+  }
+}
+
 
 
 //------------------------------------------------------------------------------
@@ -247,9 +322,9 @@ POST angebot/_update_by_query
 
             }
         }
-    }
+    }, "script" : "ctx._source.Datum = '2019'
 }
-  "script" : "ctx._source.Datum = '2019' // TODO keine ahnung wie ich hier jetzt nur das jahr aber nicht den rest verändern kann!
+// TODO keine ahnung wie ich hier jetzt nur das jahr aber nicht den rest verändern kann!
 
 //------------------------------------------------------------------------------
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
@@ -338,7 +413,7 @@ POST angebot/_delete_by_query
             "script": {
               "script": {
                 "lang": "painless",
-                "inline": "doc['Kurs.Teilnehmer'].values.length > 2"
+                "inline": "doc['Kurs.Teilnehmer'].values.length < 2"
               }
             }
           }
