@@ -1,0 +1,1003 @@
+{
+	"info": {
+		"_postman_id": "a513a993-1b78-4440-a678-63197e92efd5",
+		"name": "DB3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Setup",
+			"item": [
+				{
+					"name": "http://127.0.0.1:9211/angebot",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"settings\": {\n    \"number_of_shards\": 1\n  },\n  \"mappings\": {\n    \"_doc\": {\n      \"properties\": {\n        \"AngNr\": {\n          \"type\": \"keyword\"\n        },\n        \"Kurs\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"KursNr\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Titel\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"KursLit\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"Bestand\": {\n                  \"type\": \"integer\"\n                },\n                \"Bedarf\": {\n                  \"type\": \"integer\"\n                },\n                \"Preis\": {\n                  \"type\": \"double\"\n                }\n              }\n            },\n            \"Voraus\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"VorNr\": {\n                  \"type\": \"keyword\"\n                }\n              }\n            }\n          }\n        },\n        \"Datum\": {\n          \"type\": \"date\",\n          \"format\": \"dd.MM.yyyy\"\n        },\n        \"Ort\": {\n          \"type\": \"text\",\n          \"fielddata\": true\n        },\n        \"Kursleiter\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"PersNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Gehalt\": {\n              \"type\": \"double\"\n            }\n          }\n        },\n        \"Teilnehmer\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"TnNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Ort\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Gebuehr\": {\n              \"type\": \"double\",\n              \"null_value\": 0\n            }\n          }\n        }\n      }\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #0",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"1\",\"Kurs\":{\"KursNr\":\"G08\",\"Titel\":\"Grundlagen I\",\"KursLit\":{\"Bestand\":\"4\",\"Bedarf\":\"2\",\"Preis\":\"10.50\"}},\"Datum\":\"13.10.2018\",\"Ort\":\"Wedel\",\"Kursleiter\":{\"PersNr\":\"38197\",\"Name\":\"Huber, L.\",\"Gehalt\":\"4200.10\"},\"Teilnehmer\":[{\"TnNr\":\"145\",\"Name\":\"Huber, Chr.\",\"Ort\":\"Pinneberg\",\"Gebuehr\":null}]}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"2\",\"Kurs\":{\"KursNr\":\"G08\",\"Titel\":\"Grundlagen I\",\"KursLit\":{\"Bestand\":\"4\",\"Bedarf\":\"2\",\"Preis\":\"10.50\"}},\"Datum\":\"24.11.2018\",\"Ort\":\"Ulm\",\"Kursleiter\":{\"PersNr\":\"38197\",\"Name\":\"Huber, L.\",\"Gehalt\":\"4200.10\"},\"Teilnehmer\":[{\"TnNr\":\"143\",\"Name\":\"Schmidt, M.\",\"Ort\":\"Wedel\",\"Gebuehr\":500}]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"1\",\"Kurs\":{\"KursNr\":\"G10\",\"Titel\":\"Grundlagen II\"},\"Datum\":\"01.12.2018\",\"Ort\":\"Kiel\",\"Kursleiter\":{\"PersNr\":\"43325\",\"Name\":\"Mueller, K.\",\"Gehalt\":\"3400.80\"},\"Teilnehmer\":[]}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"2\",\"Kurs\":{\"KursNr\":\"G10\",\"Titel\":\"Grundlagen II\"},\"Datum\":\"15.02.2018\",\"Ort\":\"Hamburg\",\"Kursleiter\":{\"PersNr\":\"29594\",\"Name\":\"Schulze, H.\",\"Gehalt\":\"3890.20\"},\"Teilnehmer\":[]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #4",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"1\",\"Kurs\":{\"KursNr\":\"P13\",\"Titel\":\"C-Programmierung\",\"KursLit\":{\"Bestand\":\"3\",\"Bedarf\":\"5\",\"Preis\":\"15.20\"},\"Voraus\":[{\"VorNr\":\"G08\"},{\"VorNr\":\"G10\"}]},\"Datum\":\"28.05.2018\",\"Ort\":\"Berlin\",\"Kursleiter\":{\"PersNr\":\"27183\",\"Name\":\"Meier, I.\",\"Gehalt\":\"3400.80\"},\"Teilnehmer\":[{\"TnNr\":\"194\",\"Name\":\"Gerstner, M.\",\"Ort\":\"Rissen\",\"Gebuehr\":null},{\"TnNr\":\"146\",\"Name\":\"Abele, I.\",\"Ort\":\"Holm\",\"Gebuehr\":300}]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #5",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"2\",\"Kurs\":{\"KursNr\":\"P13\",\"Titel\":\"C-Programmierung\",\"KursLit\":{\"Bestand\":\"3\",\"Bedarf\":\"5\",\"Preis\":\"15.20\"},\"Voraus\":[{\"VorNr\":\"G08\"},{\"VorNr\":\"G10\"}]},\"Datum\":\"01.07.2018\",\"Ort\":\"Wedel\",\"Kursleiter\":{\"PersNr\":\"27183\",\"Name\":\"Meier, I.\",\"Gehalt\":\"3400.80\"},\"Teilnehmer\":[{\"TnNr\":\"143\",\"Name\":\"Schmidt, M.\",\"Ort\":\"Wedel\",\"Gebuehr\":400},{\"TnNr\":\"149\",\"Name\":\"Kircher, B.\",\"Ort\":\"Hamburg\",\"Gebuehr\":350},{\"TnNr\":\"177\",\"Name\":\"Mons, F.\",\"Ort\":\"Blankenese\",\"Gebuehr\":null}]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #6",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"1\",\"Kurs\":{\"KursNr\":\"I09\",\"Titel\":\"Datenbanken\",\"KursLit\":{\"Bestand\":\"2\",\"Bedarf\":\"6\",\"Preis\":\"8.00\"},\"Voraus\":[{\"VorNr\":\"G08\"},{\"VorNr\":\"G10\"},{\"VorNr\":\"P13\"}]},\"Datum\":\"27.03.2018\",\"Ort\":\"Kiel\",\"Kursleiter\":{\"PersNr\":\"29594\",\"Name\":\"Schulze, H.\",\"Gehalt\":\"3890.20\"},\"Teilnehmer\":[{\"TnNr\":\"146\",\"Name\":\"Abele, I.\",\"Ort\":\"Holm\",\"Gebuehr\":null},{\"TnNr\":\"155\",\"Name\":\"Meier, W.\",\"Ort\":\"Wedel\",\"Gebuehr\":null},{\"TnNr\":\"171\",\"Name\":\"Moeller, H.\",\"Ort\":\"Wedel\",\"Gebuehr\":null},{\"TnNr\":\"173\",\"Name\":\"Schulze, B.\",\"Ort\":\"Holm\",\"Gebuehr\":400},{\"TnNr\":\"185\",\"Name\":\"Meier, K.\",\"Ort\":\"Rissen\",\"Gebuehr\":450}]}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #7",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"2\",\"Kurs\":{\"KursNr\":\"I09\",\"Titel\":\"Datenbanken\",\"KursLit\":{\"Bestand\":\"2\",\"Bedarf\":\"6\",\"Preis\":\"8.00\"},\"Voraus\":[{\"VorNr\":\"G08\"},{\"VorNr\":\"G10\"},{\"VorNr\":\"P13\"}]},\"Datum\":\"23.04.2018\",\"Ort\":\"Hamburg\",\"Kursleiter\":{\"PersNr\":\"29594\",\"Name\":\"Schulze, H.\",\"Gehalt\":\"3890.20\"},\"Teilnehmer\":[{\"TnNr\":\"187\",\"Name\":\"Karstens, L.\",\"Ort\":\"Hamburg\",\"Gebuehr\":null}]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://127.0.0.1:9211/angebot/_doc #8",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"AngNr\":\"3\",\"Kurs\":{\"KursNr\":\"I09\",\"Titel\":\"Datenbanken\",\"KursLit\":{\"Bestand\":\"2\",\"Bedarf\":\"6\",\"Preis\":\"8.00\"},\"Voraus\":[{\"VorNr\":\"G08\"},{\"VorNr\":\"G10\"},{\"VorNr\":\"P13\"}]},\"Datum\":\"29.05.2018\",\"Ort\":\"Muenchen\",\"Kursleiter\":{\"PersNr\":\"29594\",\"Name\":\"Schulze, H.\",\"Gehalt\":\"3890.20\"},\"Teilnehmer\":[]}\n"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:9211/angebot/_doc",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "9211",
+							"path": [
+								"angebot",
+								"_doc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "Updates",
+					"item": [
+						{
+							"name": "a",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"query\": {\n        \"range\" : {\n            \"Datum.year\" : {\n                \"gte\": \"01.01.2018\",\n                \"lte\": \"31.12.2018\"\n\n            }\n        }\n    }, \"script\" : \"ctx._source.Datum = '2019'\"\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_update_by_query",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_update_by_query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "b",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": {\n        \"match\": {\n          \"Ort\": \"Kiel\"\n        }\n      }\n    }\n  },\n  \"script\": \"ctx._source.Ort = 'Lübeck'\"\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_update_by_query",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_update_by_query"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Get",
+					"item": [
+						{
+							"name": "a",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n      \"aggs\" : {\n        \"Orte\" : {\n          \"terms\" : {\n            \"field\" : \"Ort\"\n          }\n        }\n      }\n    }"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.Orte.buckets.key",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.Orte.buckets.key"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Teilnehmer\",\n      \"query\": {\n        \"match\": {\n          \"Teilnehmer.Ort\": \"Stuttgart\"\n        }\n      },\n      \"inner_hits\": {}\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_doc/_search?filter_path=hits.hits.inner_hits.Teilnehmer.hits.hits._source",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_doc",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.inner_hits.Teilnehmer.hits.hits._source"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "c",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kursleiter\",\n      \"query\": {\n        \"range\": {\n          \"Kursleiter.Gehalt\": {\n            \"gte\": 3000,\n            \"lte\": 4000\n          }\n        }\n      }\n    }\n  },\"sort\": {\n    \"Kursleiter.Name\": {\n      \"order\": \"asc\",\n      \"nested\": {\n        \"path\": \"Kursleiter\"\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kursleiter",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.*.Kursleiter"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "d",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"aggs\": {\n    \"Kurse\": {\n      \"nested\": {\n        \"path\": \"Kurs\"\n      },\n      \"aggs\": {\n        \"Titel\": {\n          \"terms\": {\n            \"field\": \"Kurs.Titel\",\n            \"size\": 100\n          }\n        }\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "e",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"aggs\": {\n    \"Kurse\": {\n      \"nested\": {\n        \"path\": \"Kurs\"\n      },\n      \"aggs\": {\n        \"Titel\": {\n          \"terms\": {\n            \"field\": \"Kurs.Titel\",\n            \"size\": 100\n          }\n        }\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort,hits.hits.*.Kursleiter\n",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.*.Kurs.Titel,hits.hits.*.Datum,hits.hits.*.Ort,hits.hits.*.Kursleiter\n"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "f",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"aggs\": {\n    \"Kurs\": {\n      \"nested\": {\n        \"path\": \"Kurs\"\n      },\n      \"aggs\": {\n        \"Voraus\": {\n          \"terms\": {\n            \"field\": \"Kurs.Voraus\"\n          },\n          \"aggs\": {\n            \"VorNr\": {\n              \"terms\": {\n                \"field\": \"Kurs.Voraus.VorNr\"\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kurs.Voraus",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.*.Kurs.Voraus"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "g",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"script\": {\n            \"script\": {\n              \"source\": \"doc['Ort'].value == doc['Teilnehmer.Ort']\"\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Teilnehmer",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "hits.hits.*.Teilnehmer"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "h",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must_not\": [\n        {\n          \"nested\": {\n            \"path\": \"Teilnehmer\",\n            \"query\": {\n              \"bool\": {\n                \"filter\": {\n                  \"exists\": {\n                    \"field\": \"Teilnehmer\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=*.*.*.Kurs.KursNr,*.*.*.AngNr",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "*.*.*.Kurs.KursNr,*.*.*.AngNr"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "i",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"nested\": {\n            \"path\": \"Kurs\",\n            \"query\": {\n              \"bool\": {\n                \"must\": [\n                  {\n                    \"match\": {\n                      \"Kurs.Titel\": \"C-Programmierung\"\n                    }\n                  }\n                ]\n              }\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"aggs\": {\n    \"result\": {\n      \"terms\": {\n        \"script\": \"'a big trick because we cannot use multiple aggs in the top level'\"\n      },\n      \"aggs\": {\n        \"Teilnehmer\": {\n          \"nested\": {\n            \"path\": \"Teilnehmer\"\n          }\n        },\n        \"sales_bucket_filter\": {\n          \"bucket_selector\": {\n            \"buckets_path\": {\n              \"amountOfParticipants\": \"Teilnehmer._count\"\n            },\n            \"script\": \"params.amountOfParticipants > 4\"\n          }\n        }\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.result.buckets.Teilnehmer.doc_count",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.result.buckets.Teilnehmer.doc_count"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "j",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"nested\": {\n            \"path\": \"Kurs\",\n            \"query\": {\n              \"bool\": {\n                \"must\": [\n                  {\n                    \"match\": {\n                      \"Kurs.Titel\": \"C-Programmierung\"\n                    }\n                  }\n                ]\n              }\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"aggs\": {\n    \"result\": {\n      \"terms\": {\n        \"script\": \"'a big trick because we cannot use multiple aggs in the top level'\"\n      },\n      \"aggs\": {\n        \"Teilnehmer\": {\n          \"nested\": {\n            \"path\": \"Teilnehmer\"\n          }\n        },\n        \"sales_bucket_filter\": {\n          \"bucket_selector\": {\n            \"buckets_path\": {\n              \"amountOfParticipants\": \"Teilnehmer._count\"\n            },\n            \"script\": \"params.amountOfParticipants > 4\"\n          }\n        }\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.result.buckets.Teilnehmer.doc_count",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.result.buckets.Teilnehmer.doc_count"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Delete",
+					"item": [
+						{
+							"name": "a 1",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kurs\",\n      \"query\": {\n        \"bool\": {\n          \"must\": [\n            {\n              \"match\": {\n                \"Kurs.Titel\": \"C-Programmierung\"\n              }\n            }\n          ]\n        }\n      }\n    }\n  },\n  \"script\": \"ctx._source.Kurs.KursLit = null\"\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_update_by_query",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_update_by_query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "a 2",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kurs\",\n      \"query\": {\n        \"bool\": {\n          \"must\": [\n            {\n              \"match\": {\n                \"Kurs.Titel\": \"C-Programmierung\"\n              }\n            }\n          ]\n        }\n      }\n    }\n  },\n  \"script\": \"ctx._source.Kurs.remove('KursLit')\"\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_update_by_query",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_update_by_query"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "b",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kurs\",\n      \"query\": {\n        \"bool\": {\n          \"must\": {\n            \"script\": {\n              \"script\": {\n                \"lang\": \"painless\",\n                \"inline\": \"doc['Kurs.Teilnehmer'].values.length < 2\"\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_delete_by_query",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_delete_by_query"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				}
+			]
+		}
+	]
+}
