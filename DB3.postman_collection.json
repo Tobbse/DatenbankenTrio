@@ -22,7 +22,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"settings\": {\n    \"number_of_shards\": 1\n  },\n  \"mappings\": {\n    \"_doc\": {\n      \"properties\": {\n        \"AngNr\": {\n          \"type\": \"keyword\"\n        },\n        \"Kurs\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"KursNr\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Titel\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"KursLit\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"Bestand\": {\n                  \"type\": \"integer\"\n                },\n                \"Bedarf\": {\n                  \"type\": \"integer\"\n                },\n                \"Preis\": {\n                  \"type\": \"double\"\n                }\n              }\n            },\n            \"Voraus\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"VorNr\": {\n                  \"type\": \"keyword\"\n                }\n              }\n            }\n          }\n        },\n        \"Datum\": {\n          \"type\": \"date\",\n          \"format\": \"dd.MM.yyyy\"\n        },\n        \"Ort\": {\n          \"type\": \"text\",\n          \"fielddata\": true\n        },\n        \"Kursleiter\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"PersNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Gehalt\": {\n              \"type\": \"double\"\n            }\n          }\n        },\n        \"Teilnehmer\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"TnNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Ort\": {\n              \"type\": \"text\",\n              \"fielddata\": true\n            },\n            \"Gebuehr\": {\n              \"type\": \"double\",\n              \"null_value\": 0\n            }\n          }\n        }\n      }\n    }\n  }\n}"
+							"raw": "{\n  \"settings\": {\n    \"number_of_shards\": 1\n  },\n  \"mappings\": {\n    \"_doc\": {\n      \"properties\": {\n        \"AngNr\": {\n          \"type\": \"keyword\"\n        },\n        \"Kurs\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"KursNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Titel\": {\n              \"type\": \"keyword\"\n            },\n            \"KursLit\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"Bestand\": {\n                  \"type\": \"integer\"\n                },\n                \"Bedarf\": {\n                  \"type\": \"integer\"\n                },\n                \"Preis\": {\n                  \"type\": \"double\"\n                }\n              }\n            },\n            \"Voraus\": {\n              \"type\": \"nested\",\n              \"properties\": {\n                \"VorNr\": {\n                  \"type\": \"keyword\"\n                }\n              }\n            }\n          }\n        },\n        \"Datum\": {\n          \"type\": \"date\",\n          \"format\": \"dd.MM.yyyy\"\n        },\n        \"Ort\": {\n          \"type\": \"keyword\"\n        },\n        \"Kursleiter\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"PersNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"keyword\"\n            },\n            \"Gehalt\": {\n              \"type\": \"double\"\n            }\n          }\n        },\n        \"Teilnehmer\": {\n          \"type\": \"nested\",\n          \"properties\": {\n            \"TnNr\": {\n              \"type\": \"keyword\"\n            },\n            \"Name\": {\n              \"type\": \"keyword\"\n            },\n            \"Ort\": {\n              \"type\": \"keyword\"\n            },\n            \"Gebuehr\": {\n              \"type\": \"double\",\n              \"null_value\": 0\n            }\n          }\n        }\n      }\n    }\n  }\n}"
 						},
 						"url": {
 							"raw": "http://127.0.0.1:9211/angebot",
@@ -559,7 +559,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kursleiter\",\n      \"query\": {\n        \"range\": {\n          \"Kursleiter.Gehalt\": {\n            \"gte\": 3000,\n            \"lte\": 4000\n          }\n        }\n      }\n    }\n  },\"sort\": {\n    \"Kursleiter.Name\": {\n      \"order\": \"asc\",\n      \"nested\": {\n        \"path\": \"Kursleiter\"\n      }\n    }\n  }\n}"
+									"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"Kursleiter\",\n            \"query\": {\n                \"range\": {\n                    \"Kursleiter.Gehalt\": {\n                        \"gte\": 3000,\n                        \"lte\": 4000\n                    }\n                }\n            }\n        }\n    },\n    \"sort\": {\n        \"Kursleiter.Name\": {\n            \"order\": \"asc\",\n            \"nested\": {\n                \"path\": \"Kursleiter\"\n            }\n        }\n    }\n}"
 								},
 								"url": {
 									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kursleiter",
@@ -691,7 +691,7 @@
 									"raw": "{\n  \"aggs\": {\n    \"Kurs\": {\n      \"nested\": {\n        \"path\": \"Kurs\"\n      },\n      \"aggs\": {\n        \"Voraus\": {\n          \"terms\": {\n            \"field\": \"Kurs.Voraus\"\n          },\n          \"aggs\": {\n            \"VorNr\": {\n              \"terms\": {\n                \"field\": \"Kurs.Voraus.VorNr\"\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n"
 								},
 								"url": {
-									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kurs.Voraus",
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kurs.Voraus,hits.hits.*.Kurs.Titel",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -707,7 +707,7 @@
 									"query": [
 										{
 											"key": "filter_path",
-											"value": "hits.hits.*.Kurs.Voraus"
+											"value": "hits.hits.*.Kurs.Voraus,hits.hits.*.Kurs.Titel"
 										}
 									]
 								}
@@ -820,7 +820,44 @@
 									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"nested\": {\n            \"path\": \"Kurs\",\n            \"query\": {\n              \"bool\": {\n                \"must\": [\n                  {\n                    \"match\": {\n                      \"Kurs.Titel\": \"C-Programmierung\"\n                    }\n                  }\n                ]\n              }\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"aggs\": {\n    \"result\": {\n      \"terms\": {\n        \"script\": \"'a big trick because we cannot use multiple aggs in the top level'\"\n      },\n      \"aggs\": {\n        \"Teilnehmer\": {\n          \"nested\": {\n            \"path\": \"Teilnehmer\"\n          }\n        },\n        \"sales_bucket_filter\": {\n          \"bucket_selector\": {\n            \"buckets_path\": {\n              \"amountOfParticipants\": \"Teilnehmer._count\"\n            },\n            \"script\": \"params.amountOfParticipants > 4\"\n          }\n        }\n      }\n    }\n  }\n}"
 								},
 								"url": {
-									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.result.buckets.Teilnehmer.doc_count",
+									"raw": "http://127.0.0.1:9211/angebot/_search",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "j",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"should\": [\n        {\n          \"nested\": {\n            \"path\": \"Kursleiter\",\n            \"query\": {\n            \t\"wildcard\" : { \"Kursleiter.Name\" : { \"value\" : \"Meier*\" } }\n            }\n          }\n        },\n        {\n          \"nested\": {\n            \"path\": \"Teilnehmer\",\n            \"query\": {\n            \t\"wildcard\" : { \"Teilnehmer.Name\" : { \"value\" : \"Meier*\" } }\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=hits.hits.*.Kursleiter,hits.hits.*.Teilnehmer",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -836,7 +873,7 @@
 									"query": [
 										{
 											"key": "filter_path",
-											"value": "aggregations.result.buckets.Teilnehmer.doc_count"
+											"value": "hits.hits.*.Kursleiter,hits.hits.*.Teilnehmer"
 										}
 									]
 								}
@@ -844,7 +881,7 @@
 							"response": []
 						},
 						{
-							"name": "j",
+							"name": "k",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -880,6 +917,92 @@
 										{
 											"key": "filter_path",
 											"value": "aggregations.result.buckets.Teilnehmer.doc_count"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "l",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Vorauscount\": {\n                            \"bucket_script\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt\"\n                            }\n                        },\n                        \"Kurs.Voraus\": {\n                            \"nested\": {\n                                \"path\": \"Kurs.Voraus\"\n                            }\n                        },\n                        \"sales_bucket_filter\": {\n                            \"bucket_selector\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt >= 2\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "m",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Vorauscount\": {\n                            \"bucket_script\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt\"\n                            }\n                        },\n                        \"Kurs.Voraus\": {\n                            \"nested\": {\n                                \"path\": \"Kurs.Voraus\"\n                            }\n                        },\n                        \"sales_bucket_filter\": {\n                            \"bucket_selector\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt >= 2\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value"
 										}
 									]
 								}
