@@ -777,7 +777,7 @@
 									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must_not\": [\n        {\n          \"nested\": {\n            \"path\": \"Teilnehmer\",\n            \"query\": {\n              \"bool\": {\n                \"filter\": {\n                  \"exists\": {\n                    \"field\": \"Teilnehmer\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      ]\n    }\n  }\n}"
 								},
 								"url": {
-									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=*.*.*.Kurs.KursNr,*.*.*.AngNr",
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=*.*.*.Kurs.Titel,*.*.*.AngNr",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -793,7 +793,7 @@
 									"query": [
 										{
 											"key": "filter_path",
-											"value": "*.*.*.Kurs.KursNr,*.*.*.AngNr"
+											"value": "*.*.*.Kurs.Titel,*.*.*.AngNr"
 										}
 									]
 								}
@@ -897,10 +897,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"query\": {\n    \"bool\": {\n      \"must\": [\n        {\n          \"nested\": {\n            \"path\": \"Kurs\",\n            \"query\": {\n              \"bool\": {\n                \"must\": [\n                  {\n                    \"match\": {\n                      \"Kurs.Titel\": \"C-Programmierung\"\n                    }\n                  }\n                ]\n              }\n            }\n          }\n        }\n      ]\n    }\n  },\n  \"aggs\": {\n    \"result\": {\n      \"terms\": {\n        \"script\": \"'a big trick because we cannot use multiple aggs in the top level'\"\n      },\n      \"aggs\": {\n        \"Teilnehmer\": {\n          \"nested\": {\n            \"path\": \"Teilnehmer\"\n          }\n        },\n        \"sales_bucket_filter\": {\n          \"bucket_selector\": {\n            \"buckets_path\": {\n              \"amountOfParticipants\": \"Teilnehmer._count\"\n            },\n            \"script\": \"params.amountOfParticipants > 4\"\n          }\n        }\n      }\n    }\n  }\n}"
+									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    }\n                }\n            }\n        }\n    }\n}"
 								},
 								"url": {
-									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.result.buckets.Teilnehmer.doc_count",
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.Kurs*.Kurs*.buckets.*",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -916,7 +916,7 @@
 									"query": [
 										{
 											"key": "filter_path",
-											"value": "aggregations.result.buckets.Teilnehmer.doc_count"
+											"value": "aggregations.Kurs*.Kurs*.buckets.*"
 										}
 									]
 								}
@@ -940,7 +940,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Vorauscount\": {\n                            \"bucket_script\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt\"\n                            }\n                        },\n                        \"Kurs.Voraus\": {\n                            \"nested\": {\n                                \"path\": \"Kurs.Voraus\"\n                            }\n                        },\n                        \"sales_bucket_filter\": {\n                            \"bucket_selector\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt >= 2\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Vorauscount\": {\n                            \"bucket_script\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt\"\n                            }\n                        },\n                        \"Kurs.Voraus\": {\n                            \"nested\": {\n                                \"path\": \"Kurs.Voraus\"\n                            }\n                        },\n                        \"voraus_bucket_filter\": {\n                            \"bucket_selector\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt >= 2\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
 								},
 								"url": {
 									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value",
@@ -983,10 +983,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"aggs\": {\n        \"Kurs.Titel\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"Kurs.Titel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Vorauscount\": {\n                            \"bucket_script\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt\"\n                            }\n                        },\n                        \"Kurs.Voraus\": {\n                            \"nested\": {\n                                \"path\": \"Kurs.Voraus\"\n                            }\n                        },\n                        \"sales_bucket_filter\": {\n                            \"bucket_selector\": {\n                                \"buckets_path\": {\n                                    \"vCnt\": \"Kurs.Voraus._count\",\n                                    \"kCnt\": \"_count\"\n                                },\n                                \"script\": \"params.vCnt / params.kCnt >= 2\"\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"aggs\": {\n        \"Kurs\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"KursTitel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Kursleiter\": {\n                            \"reverse_nested\": {\n                                \"path\": \"Kursleiter\"\n                            },\n                            \"aggs\": {\n                                \"Avg_Gehalt\": {\n                                    \"avg\": {\n                                        \"field\": \"Kursleiter.Gehalt\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
 								},
 								"url": {
-									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value",
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.*.*.buckets.key,aggregations.*.*.buckets.Kursleiter.Avg_Gehalt.value",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -1002,7 +1002,50 @@
 									"query": [
 										{
 											"key": "filter_path",
-											"value": "aggregations.*.*.buckets.key,aggregations.*.*.buckets.Vorauscount.value"
+											"value": "aggregations.*.*.buckets.key,aggregations.*.*.buckets.Kursleiter.Avg_Gehalt.value"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "n",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"aggs\": {\n        \"Kurs\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"KursTitel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Kursleiter\": {\n                            \"reverse_nested\": {\n                                \"path\": \"Kursleiter\"\n                            }, \"aggs\": {\n                            \t\"KursleiterName\": {\n                            \t\t\"terms\":{\n                            \t\t\t\"field\": \"Kursleiter.Name\"\n                            \t\t}\n                            \t}\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+								},
+								"url": {
+									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.Kurs.KursTitel.buckets.key,aggregations.Kurs.KursTitel.buckets.Kursleiter.KursleiterName.buckets.key",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "9211",
+									"path": [
+										"angebot",
+										"_search"
+									],
+									"query": [
+										{
+											"key": "filter_path",
+											"value": "aggregations.Kurs.KursTitel.buckets.key,aggregations.Kurs.KursTitel.buckets.Kursleiter.KursleiterName.buckets.key"
 										}
 									]
 								}
