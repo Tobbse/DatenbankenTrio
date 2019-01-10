@@ -1,0 +1,79 @@
+######################################
+############## ABFRAGEN ##############
+######################################
+
+a. alle Orte, an denen Kurse durchgeführt werden.
+        Läuft.
+
+b. die Teilnehmer aus Stuttgart. - interpretation Wohnort/Herkunft Stuttgart (b1) oder Kurs in Stuttgart (b2)?
+        Läuft.
+
+c. die Kursleiter mit einem Gehalt zwischen 3000 € und 4000 €, sortiert nach Namen.
+        Aggregations sind sehr schwierig zu sortieren, daher hier nicht möglich. Hits sind nicht distinct, also haben wir Duplicates.
+
+d. die Kurstitel mit Datum und Ort, an dem sie stattfinden.
+        Läuft.
+
+e. Anfrage d) mit zusätzlicher Ausgabe der Kursleiter.
+        Läuft.
+
+f. alle Kurstitel mit den Titeln der Kurse, die dafür Voraussetzung sind. Hat ein Kurs keine Voraussetzungen, so soll dieses Feld NULL sein. Achten Sie auf vernünftige Spaltenüberschriften. Die Ausgabe soll nach Kursen sortiert erfolgen.
+        Join fehlt, daher geben wir nur die VorNr für die Voraussetzungen an anstatt auch den Titel.
+
+g. alle Teilnehmer, die einen Kurs am eigenen Wohnort gebucht haben.
+        Funktioniert easy mit Script.
+
+h. alle Kursangebote (Kurstitel und Angebotsnummer), zu denen es noch keine Teilnehmer gibt.
+        Läuft.
+
+i. alle Kurse (egal welches Angebot) mit mindestens 5 Teilnehmern.
+        -
+
+j. alle Meier, sowohl Teilnehmer wie auch Kursleiter.
+        Funktioniert, ABER: Problem: Der ganze Kurs mit allen Teilnehmern wird bei einem Match zurückgegeben,
+        sodass schlussendlich doch nicht nur die Meiers angezeigt werden).
+
+k. die Kurstitel mit der jeweiligen Anzahl der Angebote.
+        Easy.
+
+l. die Kurstitel mit der Anzahl der Voraussetzungen, die mindestens 2 Voraussetzungen haben. Die Ausgabe soll so erfolgen, dass die Kurse mit den meisten Voraussetzungen zuerst kommen.
+        Sehr tricky mit Script und vielen Aggregations. Extrem verschachtelt. Aber funktioniert. Sortierung fehlt.
+
+m. für alle Kurse (Titel ausgeben) das durchschnittliche Gehalt der  Kursleiter, die ein Angebot dieses Kurses durchführen (nach diesem Durchschnitt aufsteigend sortiert).
+        Läuft, aber Sortierung fehlt. Problem ist wieder, dass man bei Aggregations schlecht sortieren kann. Abfrage auch sehr verschachtelt.
+
+n. alle Paare von Kursleitern, die denselben Kurs halten, und den entsprechenden Kurstitel. Geben Sie jedes Paar nur einmal aus.
+        Fehlt.
+
+
+######################################
+############## LÖSCHEN ###############
+######################################
+
+a. die Kursliteratur für den Kurs „C-Programmierung“
+
+
+
+######################################
+############## UPDATEN ###############
+######################################
+
+
+
+
+######################################
+############## GENERELL ##############
+######################################
+
+Vorteile der Datenbank:
+    -
+    -
+    -
+
+Nachteile der Datenbank:
+    - Sobald Daten anders dargestellt werden sollen als sie in der Datenbank vorhanden sind, ist Elastic problematisch.
+    - Joins sind nicht wirklich möglich.
+    - Alle Abfragen die einfach nur auslesen sind super easy. Alles was mit Filtern, aggregieren etc. zu tun hat ist schwierig.
+      Ist halt eine Suchmaschine.
+    - Sobald ein Match gefunden wird, bekommt man das ganze Objekt mit super vielen unnötigen Informationen zurück. (Vgl. Aufg. j)
+    - Abfragen werden generell sehr unübersichtlich. Mehrere Aggregationen ineinander + Filter + Script + Nested Objects sind sehr unübersichtlich.
