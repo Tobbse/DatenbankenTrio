@@ -13,7 +13,7 @@ PUT angebot
           "type": "nested",
           "properties": {
             "KursNr": {
-              "type": "text",
+              "type": "text", //TODO keyword?
               "fielddata": true
             },
             "Titel": {
