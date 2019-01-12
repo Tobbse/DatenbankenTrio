@@ -13,12 +13,10 @@ PUT angebot
           "type": "nested",
           "properties": {
             "KursNr": {
-              "type": "text", //TODO keyword?
-              "fielddata": true
+              "type": "keyword"
             },
             "Titel": {
-              "type": "text",
-              "fielddata": true
+              "type": "keyword"
             },
             "KursLit": {
               "type": "nested",
@@ -49,8 +47,7 @@ PUT angebot
           "format": "dd.MM.yyyy"
         },
         "Ort": {
-          "type": "text",
-          "fielddata": true
+          "type": "keyword"
         },
         "Kursleiter": {
           "type": "nested",
@@ -59,8 +56,7 @@ PUT angebot
               "type": "keyword"
             },
             "Name": {
-              "type": "text",
-              "fielddata": true
+              "type": "keyword"
             },
             "Gehalt": {
               "type": "double"
@@ -74,12 +70,10 @@ PUT angebot
               "type": "keyword"
             },
             "Name": {
-              "type": "text",
-              "fielddata": true
+              "type": "keyword"
             },
             "Ort": {
-              "type": "text",
-              "fielddata": true
+              "type": "keyword"
             },
             "Gebuehr": {
               "type": "double",
