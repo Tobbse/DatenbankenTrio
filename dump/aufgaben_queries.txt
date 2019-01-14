@@ -414,15 +414,14 @@ POST angebot/_update_by_query
 {
     "query": {
         "range" : {
-            "Datum.year" : {
+            "Datum" : {
                 "gte": "01.01.2018",
-                "lte": "31.12.2018"
-
+                "lt": "01.01.2019"
             }
         }
-    }, "script" : "ctx._source.Datum = '2019'
+    },
+    "script" : "DateFormat format = new SimpleDateFormat(\"dd.mm.yyyy\", Locale.ENGLISH);Date date = format.parse(ctx._source.Datum);Calendar c = Calendar.getInstance();c.setTime(date);c.add(Calendar.YEAR, 1);ctx._source.Datum = format.format(c.getTime());"
 }
-// TODO keine ahnung wie ich hier jetzt nur das jahr aber nicht den rest verändern kann!
 
 //------------------------------------------------------------------------------
 b. alle Angebote, die bisher in Kiel angeboten wurden, sollen jetzt in Lübeck stattfinden
@@ -507,14 +506,15 @@ POST angebot/_delete_by_query
       "path": "Kurs",
       "query": {
         "bool": {
-          "must": {
-            "script": {
-              "script": {
-                "lang": "painless",
-                "inline": "doc['Kurs.Teilnehmer'].values.length < 2"
+          "must": [
+            {
+              "range": {
+                "obj1.count": {
+                  "lt": 2
+                }
               }
             }
-          }
+          ]
         }
       }
     }

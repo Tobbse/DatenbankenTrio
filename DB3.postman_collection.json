@@ -395,7 +395,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"query\": {\n        \"range\" : {\n            \"Datum.year\" : {\n                \"gte\": \"01.01.2018\",\n                \"lte\": \"31.12.2018\"\n\n            }\n        }\n    }, \"script\" : \"ctx._source.Datum = '2019'\"\n}"
+									"raw": "{\n    \"query\": {\n        \"range\" : {\n            \"Datum\" : {\n                \"gte\": \"01.01.2018\",\n                \"lt\": \"01.01.2019\"\n            }\n        }\n    },\n    \"script\" : \"DateFormat format = new SimpleDateFormat(\\\"dd.mm.yyyy\\\", Locale.ENGLISH);Date date = format.parse(ctx._source.Datum);Calendar c = Calendar.getInstance();c.setTime(date);c.add(Calendar.YEAR, 1);ctx._source.Datum = format.format(c.getTime());\"\n}"
 								},
 								"url": {
 									"raw": "http://127.0.0.1:9211/angebot/_update_by_query",
@@ -1026,7 +1026,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"aggs\": {\n        \"Kurs\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"KursTitel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Kursleiter\": {\n                            \"reverse_nested\": {\n                                \"path\": \"Kursleiter\"\n                            }, \"aggs\": {\n                            \t\"KursleiterName\": {\n                            \t\t\"terms\":{\n                            \t\t\t\"field\": \"Kursleiter.Name\"\n                            \t\t}\n                            \t}\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}"
+									"raw": "{\n    \"aggs\": {\n        \"Kurs\": {\n            \"nested\": {\n                \"path\": \"Kurs\"\n            },\n            \"aggs\": {\n                \"KursTitel\": {\n                    \"terms\": {\n                        \"field\": \"Kurs.Titel\"\n                    },\n                    \"aggs\": {\n                        \"Kursleiter\": {\n                            \"reverse_nested\": {\n                                \"path\": \"Kursleiter\"\n                            },\n                            \"aggs\": {\n                                \"KursleiterName\": {\n                                    \"terms\": {\n                                        \"field\": \"Kursleiter.Name\"\n                                    }\n                                }\n                            }\n                        }\n                    }\n                },\n                \"sum_bucket_filter\": {\n                    \"bucket_selector\": {\n                        \"buckets_path\": {\n                            \"foo\": \"Kurs\"\n                        },\n                        \"script\": \"params.foo >= 2\"\n                    }\n                }\n            }\n        }\n    }\n}"
 								},
 								"url": {
 									"raw": "http://127.0.0.1:9211/angebot/_search?filter_path=aggregations.Kurs.KursTitel.buckets.key,aggregations.Kurs.KursTitel.buckets.Kursleiter.KursleiterName.buckets.key",
@@ -1140,7 +1140,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"query\": {\n    \"nested\": {\n      \"path\": \"Kurs\",\n      \"query\": {\n        \"bool\": {\n          \"must\": {\n            \"script\": {\n              \"script\": {\n                \"lang\": \"painless\",\n                \"inline\": \"doc['Kurs.Teilnehmer'].values.length < 2\"\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}"
+									"raw": "{\n    \"query\": {\n        \"nested\": {\n            \"path\": \"Kurs\",\n            \"query\": {\n                \"bool\": {\n                    \"must\": [\n                        {\n                            \"range\": {\n                                \"obj1.count\": {\n                                    \"lt\": 2\n                                }\n                            }\n                        }\n                    ]\n                }\n            }\n        }\n    }\n}"
 								},
 								"url": {
 									"raw": "http://127.0.0.1:9211/angebot/_delete_by_query",
